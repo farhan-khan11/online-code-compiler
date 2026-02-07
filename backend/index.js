@@ -4,6 +4,7 @@ import cors from 'cors'
 // imports
 import generatefile from './generatefile.js';
 import executeC from './execute.js';
+import executeJS from './executeJS.js';
 
 const PORT = 4060 || 4061;
 
@@ -18,24 +19,36 @@ server.get("/", (req,res) => {
 })
 
 server.post("/run", async (req,res) => {
-    const {language, code} = req.body || {}
+    let {language, code} = req.body || {}
     console.log("language=c::", language)
 
     if(code === undefined || code === ""){
         console.log("empty code body")
         return res.status(400).json({ message : "empty code body"})
     }
-
+try {
     //generating file
-    const filePath = await generatefile(language, code);
-    
+    let filePath = await generatefile(language, code);
+    let output;
     //executing that file
-    const output = await executeC(filePath)
-
-    console.log("body : ", language, code);
-    // console.log("filePath: ", filePath);
-    return res.status(200).json({language: language, code, filePath, output})
-    // return res.status(200).json({filePath})
+    if(language == 'c'){
+        output = await executeC(filePath)
+        
+        console.log("body : ", language, code);
+        // console.log("filePath: ", filePath);
+        return res.status(200).json({language: language, code, filePath, output})
+        // return res.status(200).json({filePath})
+    }
+    else{
+        output = await executeJS(filePath)
+        console.log("body : ", language, code);
+        return res.status(200).json({language: language, code, filePath, output})
+    }
+} catch (error) {
+    console.log(error)
+    return res.status(500).json({error : error.toString()});
+}
+    
 });
 
 server.use((req,res) => {

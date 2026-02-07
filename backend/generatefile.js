@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename); // removes the filename (generatefil
 const dirFiles = path.join(__dirname, "compiler-files");
 
 if(!fs.existsSync(dirFiles)){
-    fs.mkdirSync(dirFiles, {recursice: true});
+    fs.mkdirSync(dirFiles, {recursive: true});
 }
 
 const generatefile = async (format, content) => {
@@ -16,7 +16,7 @@ const generatefile = async (format, content) => {
     console.log("date id ",fileId);
     const fileName = `${fileId}.${format}`
     const filePath = path.join(dirFiles, fileName)
-    console.log("path.join: ", filePath)
+    console.log("filePath->path.join: ", filePath)
     fs.writeFileSync(filePath, content);
     return filePath;
 }

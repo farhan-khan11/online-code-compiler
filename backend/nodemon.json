@@ -1,0 +1,6 @@
+{
+  "ignore": [
+    "compiler-files/*",
+    "outputs/*"
+  ]
+}

@@ -19,7 +19,7 @@ if(!fs.existsSync(outputFiles)){
 
 
 
-const executeC = (filePath) => {
+const executeJS = (filePath) => {
 // "filePath": "/home/farhan-khan/code/my-online-code-cpmpiler/online-code-compiler/backend/compiler-files/1770290509111.py"
 // basename of filepath : 1770290509111.py
 
@@ -29,7 +29,7 @@ const executeC = (filePath) => {
 
     return new Promise((resolve, reject) => {
         try {
-            exec(`cd outputs && gcc ${filePath} && ./a.out`,
+            exec(`node ${filePath}`,
             (error, stdout, stderr) => {
                 if(error){
                     reject(error, stderr)
@@ -48,4 +48,4 @@ const executeC = (filePath) => {
     })
 }
 
-export default executeC
+export default executeJS

@@ -10,7 +10,7 @@ const App = () => {
 
   const handleSumbit = async() => {
     const payload = {
-      language : 'c',
+      language,
       code
     }
     console.log(payload)
@@ -39,6 +39,7 @@ const App = () => {
           setLanguage(e.target.value)
           console.log(e.target.value)
         }}>
+          <option>Select</option>
           <option value='c'>C</option>
           <option value='js'>JavaScript</option>
         </select>
