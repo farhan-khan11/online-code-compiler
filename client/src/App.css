@@ -8,8 +8,8 @@ button {
     cursor: pointer;
 }
 #App {
-    padding-bottom: 100px;
     padding-left: 30px;
+
 }
 #output-box{
     height: 25px;

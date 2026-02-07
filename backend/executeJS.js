@@ -13,35 +13,51 @@ const __dirname = path.dirname(__filename); // removes the filename (generatefil
 
 
 const outputFiles = path.join(__dirname, "outputs")
-if(!fs.existsSync(outputFiles)){
-    fs.mkdirSync(outputFiles, {recursive: true});
+if (!fs.existsSync(outputFiles)) {
+    fs.mkdirSync(outputFiles, { recursive: true });
 }
 
 
 
 const executeJS = (filePath) => {
-// "filePath": "/home/farhan-khan/code/my-online-code-cpmpiler/online-code-compiler/backend/compiler-files/1770290509111.py"
-// basename of filepath : 1770290509111.py
+    // "filePath": "/home/farhan-khan/code/my-online-code-cpmpiler/online-code-compiler/backend/compiler-files/1770290509111.py"
+    // basename of filepath : 1770290509111.py
 
-// const fileId = path.basename(filePath).split(".")[0];
-// console.log(fileId);
-// const outPath = path.join(outputFiles, `${fileId}.out`)
+    // const fileId = path.basename(filePath).split(".")[0];
+    // console.log(fileId);
+    // const outPath = path.join(outputFiles, `${fileId}.out`)
 
     return new Promise((resolve, reject) => {
         try {
             exec(`node ${filePath}`,
-            (error, stdout, stderr) => {
-                if(error){
-                    reject(error, stderr)
-                    // console.log(error, stderr)
+                (error, stdout, stderr) => {
+                    if (error) {
+                        console.error("full error : ", stderr || error.message)
+                        let err = stderr;
+                        let lines = err.split("\n");
+
+                        let cleanLines = [];
+                        for (let line of lines) {
+                            if (line.trim().startsWith("at")) break;
+                            if (line.startsWith("Node.js")) break;
+
+                            cleanLines.push(line)
+                        }
+
+
+
+                        const finalErr = cleanLines.join("\n");
+                        const lastErr =  "error at line:" + finalErr.split(".js")[1]
+                        console.log("custom err : ", lastErr)
+                        return resolve(lastErr)
+                    }
+                    if (stderr) {
+                        console.error(stderr)
+                        return resolve(stderr)
+                    }
+                    resolve(stdout);
                 }
-                // if(stderr){
-                //     reject(stderr)
-                //     // console.log(stderr)
-                // }
-                resolve(stdout || stderr);
-            }
-        )
+            )
         } catch (error) {
             console.log(error)
         }

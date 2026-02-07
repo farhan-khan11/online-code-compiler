@@ -46,9 +46,12 @@ try {
     }
 } catch (error) {
     console.log(error)
-    return res.status(500).json({error : error.toString()});
+    // return res.status(500).json({error : error.toString()})
 }
-    
+//     catch (error) {
+//     console.log("server erro :",error)
+//     return res.status(500).json({output : "Internal server error"})
+// }
 });
 
 server.use((req,res) => {

@@ -32,14 +32,24 @@ const executeC = (filePath) => {
             exec(`cd outputs && gcc ${filePath} && ./a.out`,
             (error, stdout, stderr) => {
                 if(error){
-                    reject(error, stderr)
-                    // console.log(error, stderr)
+                    console.error("full error :" ,stderr || error.message)
+                    let err = stderr;
+                    if(err.includes("error:")){
+                        err = "error:" + err.split("error:")[1]
+                    }
+                    if(err.includes("/home/")){
+                        err = err.split("/home/")[0]
+                    }
+                    console.log("custom err : ", err)
+                    return resolve(err)
                 }
-                // if(stderr){
-                //     reject(stderr)
-                //     // console.log(stderr)
-                // }
-                resolve(stdout || stderr);
+                if(stderr){
+                    console.error(stderr)
+                    return resolve(stderr)
+                    // console.log(stderr)
+                }
+
+                resolve(stdout);
             }
         )
         } catch (error) {
