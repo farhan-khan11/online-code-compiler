@@ -51,6 +51,7 @@ const App = () => {
               <option value="">Select</option>
               <option value='c'>C</option>
               <option value='js'>JavaScript</option>
+              <option value='py'>Python</option>
             </select>
 
           </div>

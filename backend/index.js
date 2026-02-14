@@ -6,6 +6,7 @@ import generatefile from './generatefile.js';
 import executeC from './execute.js';
 import executeJS from './executeJS.js';
 import "./cleanup.js"
+import executePy from './executePy.js';
 
 const PORT = 4060 || 4061;
 
@@ -40,13 +41,19 @@ try {
         return res.status(200).json({language: language, code, filePath, output})
         // return res.status(200).json({filePath})
     }
-    else{
+    if(language == 'js'){
         output = await executeJS(filePath)
+        console.log("body : ", language, code);
+        return res.status(200).json({language: language, code, filePath, output})
+    }
+    if(language == 'py'){
+        output = await executePy(filePath)
         console.log("body : ", language, code);
         return res.status(200).json({language: language, code, filePath, output})
     }
 } catch (error) {
     console.log(error)
+    return;
     // return res.status(500).json({error : error.toString()})
 }
 //     catch (error) {
