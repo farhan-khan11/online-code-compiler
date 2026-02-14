@@ -5,6 +5,7 @@ import cors from 'cors'
 import generatefile from './generatefile.js';
 import executeC from './execute.js';
 import executeJS from './executeJS.js';
+import "./cleanup.js"
 
 const PORT = 4060 || 4061;
 

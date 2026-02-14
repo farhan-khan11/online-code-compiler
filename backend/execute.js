@@ -13,45 +13,49 @@ const __dirname = path.dirname(__filename); // removes the filename (generatefil
 
 
 const outputFiles = path.join(__dirname, "outputs")
-if(!fs.existsSync(outputFiles)){
-    fs.mkdirSync(outputFiles, {recursive: true});
+
+if (!fs.existsSync(outputFiles)) {
+    fs.mkdirSync(outputFiles, { recursive: true });
 }
 
 
 
 const executeC = (filePath) => {
-// "filePath": "/home/farhan-khan/code/my-online-code-cpmpiler/online-code-compiler/backend/compiler-files/1770290509111.py"
-// basename of filepath : 1770290509111.py
+    // "filePath": "/home/farhan-khan/code/my-online-code-cpmpiler/online-code-compiler/backend/compiler-files/1770290509111.py"
+    // basename of filepath : 1770290509111.py
 
-// const fileId = path.basename(filePath).split(".")[0];
-// console.log(fileId);
-// const outPath = path.join(outputFiles, `${fileId}.out`)
+    const fileId = path.basename(filePath).split(".")[0];
+    console.log("fileId : ", fileId);
+    const outputPath = path.join(outputFiles, `${fileId}.out`)
+    console.log("outputPath : ", outputPath);
 
     return new Promise((resolve, reject) => {
         try {
-            exec(`cd outputs && gcc ${filePath} && ./a.out`,
-            (error, stdout, stderr) => {
-                if(error){
-                    console.error("full error :" ,stderr || error.message)
-                    let err = stderr;
-                    if(err.includes("error:")){
-                        err = "error:" + err.split("error:")[1]
+            // exec(`cd outputs && gcc ${filePath} && ./a.out`,
+            // exec(`cd outputs && gcc ${filePath} -o ${fileId} && ./${fileId}`,
+            exec(`gcc ${filePath} -o ${outputPath} && ${outputPath}`,
+                (error, stdout, stderr) => {
+                    if (error) {
+                        console.error("full error :", stderr || error.message)
+                        let err = stderr;
+                        if (err.includes("error:")) {
+                            err = "error:" + err.split("error:")[1]
+                        }
+                        if (err.includes("/home/")) {
+                            err = err.split("/home/")[0]
+                        }
+                        console.log("custom err : ", err)
+                        return resolve(err)
                     }
-                    if(err.includes("/home/")){
-                        err = err.split("/home/")[0]
+                    if (stderr) {
+                        console.error(stderr)
+                        return resolve(stderr)
+                        // console.log(stderr)
                     }
-                    console.log("custom err : ", err)
-                    return resolve(err)
-                }
-                if(stderr){
-                    console.error(stderr)
-                    return resolve(stderr)
-                    // console.log(stderr)
-                }
 
-                resolve(stdout);
-            }
-        )
+                    resolve(stdout);
+                }
+            )
         } catch (error) {
             console.log(error)
         }

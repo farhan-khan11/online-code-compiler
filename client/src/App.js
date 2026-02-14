@@ -9,6 +9,10 @@ const App = () => {
   const [output, setOutput] = useState("")
 
   const handleSumbit = async () => {
+    if(!language){
+      alert("Please select a language")
+      return;
+    }
     const payload = {
       language,
       code
@@ -44,7 +48,7 @@ const App = () => {
               setLanguage(e.target.value)
               console.log(e.target.value)
             }}>
-              <option>Select</option>
+              <option value="">Select</option>
               <option value='c'>C</option>
               <option value='js'>JavaScript</option>
             </select>
