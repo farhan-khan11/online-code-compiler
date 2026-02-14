@@ -55,7 +55,7 @@ const App = () => {
 
           </div>
           <br></br>
-          <textarea rows='35' cols="85" value={code}
+          <textarea rows='35' cols="110" value={code} placeholder="Start writing your code here...."
             onChange={
               (e) => { setCode(e.target.value) }
             }></textarea>
@@ -64,7 +64,7 @@ const App = () => {
         <button onClick={handleSumbit}>Run</button>
 
         <div id='output-box'>
-          <textarea rows='25' cols="85" value={output}></textarea>
+          <textarea rows='25' cols="110" value={output} placeholder="output will be displayed here..!"></textarea>
           {/* <p>{output}</p> */}
         </div>
 

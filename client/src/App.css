@@ -1,4 +1,4 @@
-button {
+/* button {
     font-size: 25px;
     background-color: black;
     padding: 10px;
@@ -15,4 +15,80 @@ button {
     height: 25px;
     border: 2px;
     border-color: black;
+} */
+
+/* Page Background */
+body {
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #ffffff;
+  margin: 0;
+  padding: 30px;
+}
+
+/* Title */
+h1 {
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+}
+
+/* Select dropdown */
+select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  background-color: #1e293b;
+  color: white;
+  font-weight: 500;
+}
+
+/* Textareas */
+textarea {
+  background-color: #111827;
+  color: #e5e7eb;
+  border: 2px solid #334155;
+  border-radius: 10px;
+  padding: 12px;
+  font-family: monospace;
+  font-size: 14px;
+  outline: none;
+  transition: 0.3s ease;
+  resize: none;
+}
+
+/* Focus effect */
+textarea:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+/* Placeholder */
+textarea::placeholder {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Run button */
+button {
+  margin-top: 15px;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+/* Button hover effect */
+button:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+}
+
+/* Output box spacing */
+#output-box {
+  margin-top: 20px;
 }
