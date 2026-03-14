@@ -8,6 +8,8 @@ import executeJS from './executeJS.js';
 import "./cleanup.js"
 import executePy from './executePy.js';
 
+import './dbConnect.js'
+
 const PORT = 4060 || 4061;
 
 const server = express()
