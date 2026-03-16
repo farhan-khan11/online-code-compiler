@@ -1,0 +1,39 @@
+import React, { createContext, useEffect, useState } from 'react'
+import axios from 'axios'
+
+export const DataContext = createContext(null)
+
+const AuthContext = (props) => {
+
+    const [user, setUser] = useState(null) // null = no user
+    const [loading, setLoading] = useState(true)
+    const [problems, setProblems] = useState([])
+
+    useEffect(() => {
+        axios.get('http://localhost:4060/auth/me', {
+            withCredentials: true // this sends session cookie automaticallly
+        })
+            .then(res => {
+                setUser(res.data)
+                setLoading(false)
+            })
+            .catch(() => {
+                setUser(null)
+                setLoading(false)
+            })
+    }, [])
+
+    useEffect(() => {
+        axios.get('http://localhost:4060/problems')
+            .then(res => setProblems(res.data))
+            .catch(error => console.log(error))
+    }, [])
+
+    return (
+        <DataContext.Provider value={{ user, setUser, loading, problems, setProblems }}>
+            {props.children}
+        </DataContext.Provider>
+    )
+}
+
+export default AuthContext

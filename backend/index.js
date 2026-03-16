@@ -20,7 +20,11 @@ const PORT = 4060 || 4061;
 
 const server = express()
 
-server.use(cors())
+server.use(cors({
+    origin: 'http://localhost:3000', // allowing this origin
+    credentials: true // and allowing cookies/sessions
+}));
+
 server.use(express.json())
 server.use(express.urlencoded({ extended: true }));
 

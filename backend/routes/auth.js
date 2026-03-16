@@ -79,6 +79,7 @@ authRouter.get('/github/callback', async(req,res) => {
 authRouter.get('/me', async (req,res) => {
 
     if(!req.session.userId){
+        console.log("Not logged in")
         return res.status(401).json({error: "Not logged in"});
     }
 
