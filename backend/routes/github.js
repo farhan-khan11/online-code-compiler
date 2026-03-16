@@ -4,22 +4,22 @@ import User from "../models/User.js";
 
 const githubRouter = express.Router()
 
-const isLoggedIn = async (req,res,next) => {
-    if(!req.session.userId){
+const isLoggedIn = async (req, res, next) => {
+    if (!req.session.userId) {
         console.log("Not logged in ! ")
-        return res.status(401).json({error: "Not logged in !"})
+        return res.status(401).json({ error: "Not logged in !" })
     }
     next();
 }
 
 // creating a repo
-githubRouter.post('/create-repo', isLoggedIn, async(req,res) => {
+githubRouter.post('/create-repo', isLoggedIn, async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
 
-        if(user.repoCreated){
+        if (user.repoCreated) {
             console.log("Repo already created !");
-            return res.status(400).json({error: "Repo already created ! "});
+            return res.status(400).json({ error: "Repo already created ! " });
         }
 
         await axios.post('https://api.github.com/user/repos',
@@ -41,12 +41,17 @@ githubRouter.post('/create-repo', isLoggedIn, async(req,res) => {
         await user.save();
 
         console.log("Repo created successfully ! ");
-        return res.status(200).json({message: "Repo Created Successfully ! "});
+        return res.status(200).json({ message: "Repo Created Successfully ! " });
 
     } catch (error) {
         console.log('error while creating repo', error);
-        return res.status(500).json({error: 'error while creating repo'})
+        return res.status(500).json({ error: 'error while creating repo' })
     }
 });
 
 export default githubRouter
+
+// use this fetch code and run in browser's console to test create-repo api.
+// fetch('http://localhost:4060/github/create-repo', { method: 'POST', credentials: 'include'}).then(res => res.json()).then(data =>console.log(data))
+// include means => it automatically fetches the connect.sid from the cookies and hits the api and repo will be created. 
+// its more easy to test than postman 
