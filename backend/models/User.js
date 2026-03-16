@@ -14,6 +14,9 @@ const userSchema = new mongoose.Schema(
         email: {
             type: String
         },
+        avatar:{
+            type: String
+        },
         accessToken: {
             type: String
         },
@@ -21,7 +24,11 @@ const userSchema = new mongoose.Schema(
             type: Boolean,
             default: false
         },
-        solvedProblems: [{type: Number}]
+        solvedProblems: [{ type: Number }],
+        
+        createdAt: {
+            type: Date
+        }
     }
 )
 
