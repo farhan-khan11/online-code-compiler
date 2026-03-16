@@ -14,6 +14,7 @@ import executePy from './executePy.js';
 import './dbConnect.js'
 import authRouter from './routes/auth.js';
 import githubRouter from './routes/github.js';
+import problemRouter from './routes/problem.js';
 
 const PORT = 4060 || 4061;
 
@@ -37,6 +38,7 @@ server.use(session({
 
 server.use('/auth', authRouter)
 server.use('/github', githubRouter)
+server.use('/problems', problemRouter)
 
 
 server.get("/", (req, res) => {

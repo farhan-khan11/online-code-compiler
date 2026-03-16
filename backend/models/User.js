@@ -1,5 +1,12 @@
 import mongoose from "mongoose";
 
+const solvedProblemsSchema = new mongoose.Schema({
+    problemId: {type: Number},
+    day: {type: Number},
+    solvedAt: {type: Date, default: Date.now},
+    language: {type: String}
+});
+
 const userSchema = new mongoose.Schema(
     {
         githubId: {
@@ -24,11 +31,11 @@ const userSchema = new mongoose.Schema(
             type: Boolean,
             default: false
         },
-        solvedProblems: [{ type: Number }],
-        
-        createdAt: {
-            type: Date
-        }
+        firstLogin: {
+            type: Date,
+            default: Date.now
+        },
+        solvedProblems: [solvedProblemsSchema]
     }
 )
 
