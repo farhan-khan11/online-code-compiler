@@ -4,23 +4,33 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 const Dashboard = () => {
-    const { user, problems } = useContext(DataContext)
+    const { user, setUser, problems, creatingRepo, setCreatingRepo } = useContext(DataContext)
     const navigate = useNavigate()
-    
+
 
     const handleLogout = () => {
-        axios.get('http://localhost:4060/auth/logout', {
-            withCredentials: true
-        })
-            .then(() => navigate('/'))
+        try {
+            axios.get('http://localhost:4060/auth/logout', {
+                withCredentials: true
+            })
+            setUser(null)
+            navigate("/")
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const handleCreateRepo = () => {
-        axios.post('http://localhost:4060/github/create-repo', {},{
+        setCreatingRepo(true)
+
+        axios.post('http://localhost:4060/github/create-repo', {}, {
             withCredentials: true
         })
             .then(res => alert(res.data.message))
-            .catch(error => alert(error.response.data.message));
+            .catch(error => alert(error.response.data.error))
+            .finally(() => {
+                setCreatingRepo(false)
+            })
     }
 
     return (
@@ -41,14 +51,19 @@ const Dashboard = () => {
                         alt="avatar"
                     />
                     <span className="text-white">{user.username}</span>
-                    {!user.repoCreated && (
+                    {/* {!user.repoCreated && (
                         <button
                             className="btn btn-sm btn-success"
                             onClick={handleCreateRepo}
                         >
                             Create Repo
                         </button>
-                    )}
+                    )} */}
+                                                                                        {/* if creatingRepo = false => disabled = false => then button is clickable if its true then button is unclickable */}
+                    <button className='btn btn-sm btn-success' onClick={handleCreateRepo} disabled={creatingRepo}>
+                        {creatingRepo ? "Creating..." : "Create Repo"}
+                    </button>
+
                     <button
                         className="btn btn-outline-light btn-sm"
                         onClick={handleLogout}

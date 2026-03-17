@@ -7,6 +7,7 @@ const AuthContext = (props) => {
 
     const [user, setUser] = useState(null) // null = no user
     const [loading, setLoading] = useState(true)
+    const [creatingRepo, setCreatingRepo] = useState(false)
     const [problems, setProblems] = useState([])
 
     useEffect(() => {
@@ -30,7 +31,7 @@ const AuthContext = (props) => {
     }, [])
 
     return (
-        <DataContext.Provider value={{ user, setUser, loading, problems, setProblems }}>
+        <DataContext.Provider value={{ user, setUser, loading, setLoading, problems, setProblems, creatingRepo, setCreatingRepo }}>
             {props.children}
         </DataContext.Provider>
     )

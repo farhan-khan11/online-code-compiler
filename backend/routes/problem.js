@@ -22,7 +22,7 @@ problemRouter.get('/:id', async (req, res) => {
             return res.status(400).json({ error: "Problem not found" })
         }
         console.log("problem found : ", problem)
-        return res.status(200).json({ problem })
+        return res.status(200).json(problem)
     } catch (error) {
         console.log("Error fetching Problem")
         return res.status(500).json({ error: "Error fetching Problem" })

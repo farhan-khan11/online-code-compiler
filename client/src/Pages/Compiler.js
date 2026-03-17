@@ -1,12 +1,23 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import '../App.css'
 import axios from 'axios'
 
 const Compiler = () => {
 
+    const { id } = useParams()
+    const navigate = useNavigate()
+    const [problem, setProblem] = useState(null)
     const [language, setLanguage] = useState('')
     const [code, setCode] = useState("")
     const [output, setOutput] = useState("")
+
+
+    useEffect(() => {
+        axios.get(`http://localhost:4060/problems/${id}`)
+            .then(res => setProblem(res.data))
+            .catch(error => console.log(error))
+    }, [id])
 
     const handleSumbit = async () => {
         if (!language) {
@@ -34,12 +45,46 @@ const Compiler = () => {
         }
     }
 
+    const handleCommit = async () => {
+        if (!language) {
+            alert("Please select a language")
+            return;
+        }
+        if (!code) {
+            alert("Please write some code")
+            return;
+        }
+        try {
+            const { data } = await axios.post("http://localhost:4060/github/commit",
+                { code, language, problemId: id },
+                { withCredentials: true }
+            )
+            alert(data.message);
+            navigate('/dashboard')
+        } catch (error) {
+            alert(error.response.data.error)
+        }
+
+    }
+
     return (
         <>
             <div id='App'>
 
                 <div>
                     <h1><i>ONLINE CODE COMPILER</i></h1>
+
+                    {problem && (
+                        <div style={{
+                            background: '#1e293b',
+                            padding: '15px 20px',
+                            borderRadius: '10px',
+                            marginBottom: '20px'
+                        }}>
+                            <h5 style={{ color: '#38bdf8' }}>{problem.title}</h5>
+                            <p style={{ color: '#e5e7eb' }}>{problem.description}</p>
+                        </div>
+                    )}
 
                     <div>
 
@@ -63,6 +108,7 @@ const Compiler = () => {
                 </div>
 
                 <button onClick={handleSumbit}>Run</button>
+                <button onClick={handleCommit}>Commit</button>
 
                 <div id='output-box'>
                     <textarea rows='25' cols="110" value={output} placeholder="output will be displayed here..!"></textarea>

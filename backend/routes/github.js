@@ -17,15 +17,34 @@ githubRouter.post('/create-repo', isLoggedIn, async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
 
-        if (user.repoCreated) {
-            console.log("Repo already created !");
-            return res.status(400).json({ error: "Repo already created ! " });
+        try {
+            await axios.get(`https://api.github.com/repos/${user.username}/100DaysOfCodingChallenge`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${user.accessToken}`,
+                        Accept: 'application/vnd.github+json'
+                    }
+                }
+            );
+            user.repoCreated = true;
+            await user.save()
+            console.log("Repo already exists on GitHub")
+            return res.status(400).json({error: "Repo already exists on GitHub"})
+        } catch (error) {
+            if(error.response.status == 404){
+                user.repoCreated = false
+                await user.save();
+            }
         }
+        // if (user.repoCreated) {
+        //     console.log("Repo already created !");
+        //     return res.status(400).json({ error: "Repo already created ! " });
+        // }
 
         await axios.post('https://api.github.com/user/repos',
             {
                 name: '100DaysOfCodingChallenge',
-                description: 'My 100 Days of Coding Challange journey!!',
+                description: 'My 100 Days of Coding Challenge journey!!',
                 private: false,
                 auto_init: true // this creates repo with readme file
             },
@@ -46,6 +65,78 @@ githubRouter.post('/create-repo', isLoggedIn, async (req, res) => {
     } catch (error) {
         console.log('error while creating repo', error);
         return res.status(500).json({ error: 'error while creating repo' })
+    }
+});
+
+
+// commit code api
+githubRouter.post('/commit', isLoggedIn, async(req,res) => {
+    try {
+        const {code, language, problemId} = req.body;
+
+        const user = await User.findById(req.session.userId);
+
+        const firstLogin = new Date(user.firstLogin);
+        const today = new Date();
+        const diffTime = today - firstLogin
+        const day = Math.floor(diffTime/(1000 * 60 * 60 * 24)) + 1
+
+        const extensions = {js: 'js', py: 'py', c: 'c'};
+        const ext = extensions[language]
+
+        const filePath = `Day${day}/Problem_${problemId}.${ext}`
+
+        const encodedCode = Buffer.from(code).toString('base64')
+
+        let sha = null;
+        try {
+            const existingFile = await axios.get(`https://api.github.com/repos/${user.username}/100DaysOfCodingChallenge/contents/${filePath}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${user.accessToken}`,
+                        Accept: 'application/vnd.github+json'
+                    }
+                }
+            );
+
+            sha = existingFile.data.sha // getting sha if the file exists
+        } catch (error) {
+            if(error.response && error.response.status == 404){
+                console.log("File does not exist, creating new file....")
+            }else{
+                console.log("Error checking file: ", error.response.data || error);
+                return res.status(500).json({error: "Error checking file on Github"})
+            }
+        }
+
+        await axios.put(
+            `https://api.github.com/repos/${user.username}/100DaysOfCodingChallenge/contents/${filePath}`,
+            {
+                message: `Day ${day} - Solved Problem ${problemId}`,
+                content: encodedCode,
+                ...(sha && {sha}) // only includes sha if it exists
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${user.accessToken}`,
+                    Accept: 'application/vnd.github+json'
+                }
+            }
+        );
+
+        user.solvedProblems.push({
+            problemId,
+            day,
+            solvedAt: new Date(),
+            language
+        });
+
+        await user.save();
+        console.log(`Code commited successfully to Day${day}/Problem_${problemId}.${ext} !`)
+        return res.status(200).json({message: `Code commited successfully to Day${day}/Problems_${problemId}.${ext} !`})
+    } catch (error) {
+        console.log("error commiting code", error);
+        return res.status(500).json({error : "error commiting code"})
     }
 });
 

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const solvedProblemsSchema = new mongoose.Schema({
-    problemId: {type: Number},
+    problemId: {type: mongoose.Schema.Types.ObjectId, ref: "Problem"},
     day: {type: Number},
     solvedAt: {type: Date, default: Date.now},
     language: {type: String}
