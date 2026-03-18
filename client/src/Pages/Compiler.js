@@ -62,7 +62,9 @@ const Compiler = () => {
             alert(data.message);
             navigate('/dashboard')
         } catch (error) {
-            alert(error.response.data.error)
+            console.log("error.response.data.error : ", error.response.data.error)
+            alert(error.response.data.error || "something went wrong")
+            navigate('/')
         }
 
     }

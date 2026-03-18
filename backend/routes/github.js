@@ -7,7 +7,8 @@ const githubRouter = express.Router()
 const isLoggedIn = async (req, res, next) => {
     if (!req.session.userId) {
         console.log("Not logged in ! ")
-        return res.status(401).json({ error: "Not logged in !" })
+        res.status(401).json({ error: "Not logged in !" })
+        return res.redirect("/")
     }
     next();
 }
@@ -78,8 +79,10 @@ githubRouter.post('/commit', isLoggedIn, async(req,res) => {
 
         const firstLogin = new Date(user.firstLogin);
         const today = new Date();
-        const diffTime = today - firstLogin
-        const day = Math.floor(diffTime/(1000 * 60 * 60 * 24)) + 1
+        const diffTime = today - firstLogin // not calender based . its counting based on firstlogin to next 24hrs intervals
+        const day = Math.floor(diffTime/(1000 * 60 * 60 * 24)) + 1 // converts milliseconds to days 
+        console.log("Day : ", day)
+        console.log("In hrs : ", diffTime)
 
         const extensions = {js: 'js', py: 'py', c: 'c'};
         const ext = extensions[language]
@@ -100,6 +103,9 @@ githubRouter.post('/commit', isLoggedIn, async(req,res) => {
             );
 
             sha = existingFile.data.sha // getting sha if the file exists
+            // sha = unique identifier (hash) of a file version in Git
+            // while creating a new file => no need of sha
+            // while updating a file =>  need sha
         } catch (error) {
             if(error.response && error.response.status == 404){
                 console.log("File does not exist, creating new file....")

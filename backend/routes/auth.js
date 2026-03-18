@@ -12,17 +12,17 @@ const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET
 const CLIENT_URL = process.env.CLIENT_URL
 
 // redirectiong user to github
-authRouter.get('/github', (req,res) => {
+authRouter.get('/github', (req, res) => {
     const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&scope=repo user:email`;
     res.redirect(githubAuthUrl)
 })
 
-authRouter.get('/github/callback', async(req,res) => {
-    const {code} = req.query;
+authRouter.get('/github/callback', async (req, res) => {
+    const { code } = req.query;
 
-    if(!code){
+    if (!code) {
         console.log("No code from github");
-        return res.status(400).json({error: "No code from github"})
+        return res.status(400).json({ error: "No code from github" })
     }
 
     try {
@@ -34,7 +34,7 @@ authRouter.get('/github/callback', async(req,res) => {
                 code
             },
             {
-                headers: {Accept: 'application/json'}
+                headers: { Accept: 'application/json' }
             }
         );
 
@@ -50,9 +50,9 @@ authRouter.get('/github/callback', async(req,res) => {
         const profile = userResponse.data
 
         // finding and creating user in mongodb
-        let user = await User.findOne({githubId: profile.id});
+        let user = await User.findOne({ githubId: profile.id });
 
-        if(!user){
+        if (!user) {
             user = await User.create({
                 githubId: profile.id,
                 username: profile.login,
@@ -72,15 +72,16 @@ authRouter.get('/github/callback', async(req,res) => {
 
     } catch (error) {
         console.log("OAuth Error : ", error)
-        return res.status(500).json({error : "OAuth failed"});
+        return res.status(500).json({ error: "OAuth failed" });
     }
 });
 
-authRouter.get('/me', async (req,res) => {
+authRouter.get('/me', async (req, res) => {
 
-    if(!req.session.userId){
+    if (!req.session.userId) {
         console.log("Not logged in")
-        return res.status(401).json({error: "Not logged in"});
+        res.status(401).json({ error: "Not logged in" });
+        return res.redirect("/")
     }
 
     const user = await User.findById(req.session.userId);
@@ -93,9 +94,9 @@ authRouter.get('/me', async (req,res) => {
 });
 
 
-authRouter.get('/logout', (req,res) => {
+authRouter.get('/logout', (req, res) => {
     req.session.destroy();
-    res.json({message: "Logged out Successfully"})
+    res.json({ message: "Logged out Successfully" })
 });
 
 export default authRouter
